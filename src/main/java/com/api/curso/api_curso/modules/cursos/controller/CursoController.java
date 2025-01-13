@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,58 +34,47 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequestMapping("/cursos")
 public class CursoController {
 
-    @Autowired
-    private CursoUseCase cursoUseCase;
-    @Autowired
-    private ListAllCursosByFilterUseCase listAllCursosByFIlterUseCase;
+    private final CursoUseCase cursoUseCase;
+    private final ListAllCursosByFilterUseCase listAllCursosByFilterUseCase;
+
+    public CursoController(CursoUseCase cursoUseCase, ListAllCursosByFilterUseCase listAllCursosByFilterUseCase) {
+        this.cursoUseCase = cursoUseCase;
+        this.listAllCursosByFilterUseCase = listAllCursosByFilterUseCase;
+    }
 
     @PostMapping
     public ResponseEntity<CursoEntity> create(@Valid @RequestBody CursoEntity cursoEntity) {
-       var curso = this.cursoUseCase.execute(cursoEntity);
+       
+        var curso = this.cursoUseCase.execute(cursoEntity);
+       return ResponseEntity.status(HttpStatus.CREATED).body(curso);
 
-       return ResponseEntity.status(201).body(curso);
     }
 
     @GetMapping
     public ResponseEntity<List<CursoDTO>> findCursoByFilter(@RequestParam(required = false) String name, @RequestParam(required = false) String category) {
-        FiltroCursoDTO filtroCursoDTO = new FiltroCursoDTO();
-        filtroCursoDTO.setName(name);
-        filtroCursoDTO.setCategory(category);
-        try {
-            List<CursoDTO> cursos= listAllCursosByFIlterUseCase.execute(filtroCursoDTO);
-            return ResponseEntity.ok().body(cursos);
-        } catch (Exception e) {
-            return ResponseEntity.status(404).body(List.of(new CursoDTO(UUID.randomUUID(), "Nenhum curso encontrado", "Sem categoria", false, LocalDateTime.now(), LocalDateTime.now())));
-        }
+        FiltroCursoDTO filtroCursoDTO = new FiltroCursoDTO(name, category);
+        var cursos = listAllCursosByFilterUseCase.execute(filtroCursoDTO);
+        return ResponseEntity.ok().body(cursos);
+        
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CursoEntity> findCursoById(@PathVariable UUID id, @RequestBody @Valid UpdateCursoDTO updateCursoDTO) {
-       
-
+    public ResponseEntity<CursoEntity> updateCurso(@PathVariable UUID id, @RequestBody @Valid UpdateCursoDTO updateCursoDTO) {
         updateCursoDTO.setId(id);
-        
-        CursoEntity cursoUpdated = cursoUseCase.updatedCurso(updateCursoDTO);
-        return ResponseEntity.ok().body(cursoUpdated);
-        
+        cursoUseCase.updatedCurso(updateCursoDTO);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<CursoEntity> deleteCursoById(@PathVariable UUID id) {
-        var curso = cursoUseCase.getById(id).orElseThrow(() -> new CursoNotFoundException("Curso não encontrado"));
-        curso.setActive(false);
-        curso.setDeletedAt(LocalDateTime.now());
-        cursoUseCase.execute(curso);
-        return ResponseEntity.ok().build();
+        cursoUseCase.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}/active")
-    public ResponseEntity<CursoEntity> patchUpdateActive(@PathVariable UUID id, @RequestBody UpdateCursoDTO updateCursoDTO) {
-        var curso = cursoUseCase.getById(id).orElseThrow(() -> new CursoNotFoundException("Curso não encontrado"));
-        curso.setActive(!curso.isActive());
-        curso.setUpdatedAt(LocalDateTime.now());
-        cursoUseCase.execute(curso);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<CursoEntity> patchUpdateActive(@PathVariable UUID id) {
+        cursoUseCase.toggleActive(id);
+        return ResponseEntity.noContent().build();
     }
     
 }

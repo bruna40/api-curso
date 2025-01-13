@@ -34,7 +34,7 @@ public class CursoUseCase {
         if (cursoEntity.getName() != null) {
             updateCursoDTO.setName(updateCursoDTO.getName());
         }
-        
+
         if (cursoEntity.getCategory() != null) {
             updateCursoDTO.setCategory(updateCursoDTO.getCategory());
         }
@@ -42,6 +42,18 @@ public class CursoUseCase {
         cursoEntity.setUpdatedAt(LocalDateTime.now());
 
         return cursoRepository.save(cursoEntity);
+    }
+
+    public void toggleActive(UUID id) {
+        var cursoEntity = cursoRepository.findById(id).orElseThrow(() -> new CursoNotFoundException("Curso não encontrado"));
+        cursoEntity.setActive(!cursoEntity.isActive());
+        cursoRepository.save(cursoEntity);
+    }
+
+    public void delete(UUID id) {
+        var cursoEntity = cursoRepository.findById(id).orElseThrow(() -> new CursoNotFoundException("Curso não encontrado"));
+        cursoEntity.setDeletedAt(LocalDateTime.now());
+        cursoRepository.save(cursoEntity);
     }
 
 }
