@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.api.curso.api_curso.modules.cursos.dto.UpdateCursoDTO;
 import com.api.curso.api_curso.modules.cursos.entity.CursoEntity;
+import com.api.curso.api_curso.modules.cursos.exceptions.CursoNotFoundException;
 import com.api.curso.api_curso.modules.cursos.repository.CursoRepository;
 
 
@@ -18,7 +19,6 @@ public class CursoUseCase {
 
     @Autowired
     private CursoRepository cursoRepository;
-    
 
     public CursoEntity execute(CursoEntity cursoEntity) {
         return cursoRepository.save(cursoEntity);
@@ -29,10 +29,12 @@ public class CursoUseCase {
     }
 
     public CursoEntity updatedCurso(UpdateCursoDTO updateCursoDTO) {
-        var cursoEntity = cursoRepository.findById(updateCursoDTO.getId()).orElseThrow();
+        var cursoEntity = cursoRepository.findById(updateCursoDTO.getId()).orElseThrow(() -> new CursoNotFoundException("Curso não encontrado"));
+        
         if (cursoEntity.getName() != null) {
             updateCursoDTO.setName(updateCursoDTO.getName());
         }
+        
         if (cursoEntity.getCategory() != null) {
             updateCursoDTO.setCategory(updateCursoDTO.getCategory());
         }
