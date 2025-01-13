@@ -1,6 +1,5 @@
 package com.api.curso.api_curso.modules.cursos.entity;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -11,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PreUpdate;
 import lombok.Data;
 
 @Data
@@ -25,7 +25,7 @@ public class CursoEntity {
     private boolean active = true;
 
     @CreationTimestamp
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)//utilizado para nao alterar a datos de criacao
     private LocalDateTime createdAt;
 
     @CreationTimestamp
@@ -34,4 +34,9 @@ public class CursoEntity {
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt; 
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

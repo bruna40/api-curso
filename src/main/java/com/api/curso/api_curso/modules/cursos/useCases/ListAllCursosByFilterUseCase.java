@@ -13,7 +13,7 @@ import com.api.curso.api_curso.modules.cursos.repository.CursoRepository;
 
 
 @Service
-public class ListAllCursosByFIlterUseCase {  
+public class ListAllCursosByFilterUseCase {  
 
     @Autowired
     private CursoRepository cursoRepository;
@@ -37,7 +37,7 @@ public class ListAllCursosByFIlterUseCase {
         }
 
         return cursos.stream()
-                     .map(curso -> new CursoDTO(curso.getId(), curso.getName(), curso.getCategory()))
+                     .map(curso -> new CursoDTO(curso.getId(), curso.getName(), curso.getCategory(), curso.isActive(), curso.getCreatedAt(), curso.getUpdatedAt()))
                      .collect(Collectors.toList());
 
     }
