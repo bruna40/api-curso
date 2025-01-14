@@ -1,6 +1,7 @@
 package com.api.curso.api_curso.security;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,6 +37,10 @@ public class SecurityUserFilter extends OncePerRequestFilter {
                 var userId = decodeToken.getClaim("userId").asString();
                 var roles = decodeToken.getClaim("roles").asList(String.class);
 
+
+                if(roles == null) {
+                    roles = new ArrayList<>();
+                }
                 var authorities = roles.stream()
                     .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
                     .toList();

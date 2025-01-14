@@ -20,36 +20,36 @@ public class SecurityConfig {
       "/v3/api-docs/**",
       "/swagger-resource/**",
       "/actuator/**"
-  };
+    };
 
-  @Autowired
+    @Autowired
     private SecurityUserFilter securityUserFilter;
 
-  @Bean
-  SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.csrf(csrf -> csrf.disable())
-        .authorizeHttpRequests(auth -> {
-          auth
-              .requestMatchers(HttpMethod.POST, "/users").permitAll()
-              .requestMatchers(HttpMethod.POST, "/login").permitAll()          
-              .requestMatchers(HttpMethod.GET, "/cursos").hasAnyRole("USER", "ADMIN")
-              .requestMatchers(HttpMethod.POST, "/cursos").hasRole("ADMIN")
-              .requestMatchers(HttpMethod.GET, "/cursos/**").hasAnyRole("USER", "ADMIN")
-              .requestMatchers(HttpMethod.PUT, "/cursos/**").hasRole("ADMIN")
-              .requestMatchers(HttpMethod.DELETE, "/cursos/**").hasRole("ADMIN")
-              .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
-              .requestMatchers(HttpMethod.GET, "/users/**").hasRole("ADMIN")
-              .requestMatchers(HttpMethod.PUT, "/users/**").hasRole("ADMIN")
-              .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
-              .requestMatchers(PERMIT_ALL_LIST).permitAll()
-              .anyRequest().authenticated();
-        })
-        .addFilterBefore(securityUserFilter, BasicAuthenticationFilter.class);
-    return http.build();
-  }
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> {
+                auth
+                    .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/login").permitAll()          
+                    .requestMatchers(HttpMethod.GET, "/cursos").hasAnyRole("USER", "ADMIN")
+                    .requestMatchers(HttpMethod.POST, "/cursos").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/cursos/**").hasAnyRole("USER", "ADMIN")
+                    .requestMatchers(HttpMethod.PUT, "/cursos/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/cursos/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/users/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PUT, "/users/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
+                    .requestMatchers(PERMIT_ALL_LIST).permitAll()
+                    .anyRequest().authenticated();
+            })
+            .addFilterBefore(securityUserFilter, BasicAuthenticationFilter.class);
+        return http.build();
+    }
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

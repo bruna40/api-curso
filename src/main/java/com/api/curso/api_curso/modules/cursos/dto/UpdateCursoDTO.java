@@ -3,10 +3,15 @@ package com.api.curso.api_curso.modules.cursos.dto;
 
 import java.util.UUID;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class UpdateCursoDTO {
 
+  
     private UUID id;
+    @Schema(description = "Nome do curso", example = "Java")
     private String name;
+    @Schema(description = "Descrição do curso", example = "ensino")
     private String category;
 
     public UpdateCursoDTO(String name, String category) {

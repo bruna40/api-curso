@@ -6,16 +6,21 @@ import org.springframework.web.bind.annotation.RestController;
 import com.api.curso.api_curso.modules.users.entity.UserEntity;
 import com.api.curso.api_curso.modules.users.useCases.UserUseCase;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
 @RequestMapping("/users")
+@Tag(name = "User", description = "Informacoes dos usuarios")
 public class UserController {
 
     @Autowired
@@ -30,5 +35,6 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    
     
 }

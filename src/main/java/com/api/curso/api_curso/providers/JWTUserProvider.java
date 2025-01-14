@@ -9,6 +9,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,11 +49,11 @@ public class JWTUserProvider {
     Algorithm algorithm = Algorithm.HMAC256(secretKey);
     var expiresIn = Instant.now().plus(Duration.ofDays(1));
 
-    String roleName = roles.toString();
+    List<String> rolesList = List.of(roles.toString());
     return JWT.create()
         .withIssuer("auth0")
         .withClaim("userId", userId)
-        .withClaim("roles", roleName)
+        .withClaim("roles", rolesList)
         .withExpiresAt(expiresIn)
         .sign(algorithm);
   }

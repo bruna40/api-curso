@@ -27,4 +27,8 @@ public class UserUseCase {
 
         return this.userRepository.save(userEntity);
     }
+
+    public UserEntity findUser() {
+        return null;
+    }
 }

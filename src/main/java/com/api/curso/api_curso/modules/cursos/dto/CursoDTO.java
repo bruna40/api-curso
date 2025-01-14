@@ -3,16 +3,16 @@ package com.api.curso.api_curso.modules.cursos.dto;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class CursoDTO {
     
     private UUID id;
+    @Schema(description = "Nome do curso", example = "Java")
     private String name;
+    @Schema(description = "Descrição do curso", example = "ensino")
     private String category;
+    @Schema(description = "Status do curso", example = "true")
     private boolean active;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.api.curso.api_curso.modules.users.dto.LoginUserDTO;
 import com.api.curso.api_curso.modules.users.useCases.LoginUseCase;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -19,7 +22,8 @@ public class LoginController {
     private LoginUseCase loginUseCase;
 
 
-    @PostMapping 
+    @PostMapping
+    @Tag(name = "Login", description = "Informacoes do login")
     public ResponseEntity<Object> login(@RequestBody LoginUserDTO loginUserDTO) {
         try {
             var user = loginUseCase.execute(loginUserDTO);

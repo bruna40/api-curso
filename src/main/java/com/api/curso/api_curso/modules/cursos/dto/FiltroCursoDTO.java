@@ -1,12 +1,16 @@
 package com.api.curso.api_curso.modules.cursos.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
 public class FiltroCursoDTO {
+
+    @Schema(description = "Nome do curso", example = "Java")
     private String name;
+    @Schema(description = "Categoria do curso", example = "ensino")
     private String category;
 
     public FiltroCursoDTO(String name, String category) {

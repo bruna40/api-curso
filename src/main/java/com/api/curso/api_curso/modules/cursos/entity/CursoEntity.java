@@ -5,13 +5,17 @@ import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.api.curso.api_curso.modules.users.entity.UserEntity;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PreUpdate;
-import lombok.Data;
 
 @Entity(name = "cursos")
 public class CursoEntity {
@@ -19,7 +23,10 @@ public class CursoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Schema(description = "Nome do curso", example = "Java")
     private String name;
+    @Schema(description = "Descrição do curso", example = "ensino")
     private String category;
     private boolean active = true;
 
@@ -32,7 +39,11 @@ public class CursoEntity {
     private LocalDateTime updatedAt;
 
     @Column(name = "deleted_at")
-    private LocalDateTime deletedAt; 
+    private LocalDateTime deletedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    private UserEntity user;
 
     public CursoEntity() {
     }

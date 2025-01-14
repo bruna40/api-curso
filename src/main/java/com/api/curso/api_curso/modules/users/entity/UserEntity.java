@@ -6,6 +6,8 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.Length;
 
+import com.api.curso.api_curso.modules.cursos.entity.CursoEntity;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import jakarta.persistence.Column;
@@ -15,6 +17,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
 
@@ -30,11 +33,11 @@ public class UserEntity {
     private String name;
 
     @Email(message = "O campo [email] deve conter um e-mail válido")
-    @Schema(example = "daniel@gmail.com", requiredMode = RequiredMode.REQUIRED, description = "E-mail do candidato")
+    @Schema(example = "ada@email.com", requiredMode = RequiredMode.REQUIRED, description = "E-mail do candidato")
     private String email;
 
     @Length(min = 10, max = 100, message = "A senha deve conter entre (10) e (100) caracteres")
-    @Schema(example = "123456", requiredMode = RequiredMode.REQUIRED, description = "Senha do candidato")
+    @Schema(example = "0123456789", requiredMode = RequiredMode.REQUIRED, description = "Senha do candidato")
     private String password;
 
     @CreationTimestamp
@@ -50,4 +53,5 @@ public class UserEntity {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
 }
