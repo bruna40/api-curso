@@ -6,13 +6,12 @@ import com.api.curso.api_curso.modules.cursos.dto.CursoDTO;
 import com.api.curso.api_curso.modules.cursos.dto.FiltroCursoDTO;
 import com.api.curso.api_curso.modules.cursos.dto.UpdateCursoDTO;
 import com.api.curso.api_curso.modules.cursos.entity.CursoEntity;
-import com.api.curso.api_curso.modules.cursos.exceptions.CursoNotFoundException;
 import com.api.curso.api_curso.modules.cursos.useCases.CursoUseCase;
 import com.api.curso.api_curso.modules.cursos.useCases.ListAllCursosByFilterUseCase;
 
 import jakarta.validation.Valid;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
 import java.util.UUID;
 

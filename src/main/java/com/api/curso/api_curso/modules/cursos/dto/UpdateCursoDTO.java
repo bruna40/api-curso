@@ -3,16 +3,38 @@ package com.api.curso.api_curso.modules.cursos.dto;
 
 import java.util.UUID;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class UpdateCursoDTO {
 
     private UUID id;
     private String name;
     private String category;
+
+    public UpdateCursoDTO(String name, String category) {
+        this.name = name;
+        this.category = category;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 }
