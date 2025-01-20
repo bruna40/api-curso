@@ -1,7 +1,6 @@
 package com.api.curso.api_curso.modules.cursos.controller;
 
 import org.springframework.web.bind.annotation.RestController;
-
 import com.api.curso.api_curso.modules.cursos.dto.CreateCursoDTO;
 import com.api.curso.api_curso.modules.cursos.dto.CursoDTO;
 import com.api.curso.api_curso.modules.cursos.dto.FiltroCursoDTO;
@@ -9,7 +8,6 @@ import com.api.curso.api_curso.modules.cursos.dto.UpdateCursoDTO;
 import com.api.curso.api_curso.modules.cursos.entity.CursoEntity;
 import com.api.curso.api_curso.modules.cursos.useCases.CursoUseCase;
 import com.api.curso.api_curso.modules.cursos.useCases.ListAllCursosByFilterUseCase;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -19,11 +17,9 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
-
-
-import java.util.List;
 import java.util.UUID;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -75,7 +71,6 @@ public class CursoController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-  
     @Operation(summary = "Listar de todos os cursos disponiveis", description = "Listar todos os cursos, podendo ser filtrado por nome e/ou categoria")
     @ApiResponses({
         @ApiResponse(responseCode = "200", content = {
@@ -85,10 +80,15 @@ public class CursoController {
         @ApiResponse(responseCode = "401", description = "Sem autorizacao")
     })
     @SecurityRequirement(name = "jwt_auth")
-    public ResponseEntity<List<CursoDTO>> findCursoByFilter(@RequestParam(required = false) String name, @RequestParam(required = false) String category) {
+    public ResponseEntity<Page<CursoDTO>> findCursoByFilter(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String category,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         try {
             FiltroCursoDTO filtroCursoDTO = new FiltroCursoDTO(name, category);
-            List<CursoDTO> cursos = listAllCursosByFilterUseCase.execute(filtroCursoDTO);
+            PageRequest pageable = PageRequest.of(page, size); // Aqui você cria o Pageable
+            Page<CursoDTO> cursos = listAllCursosByFilterUseCase.execute(filtroCursoDTO, pageable);
             return ResponseEntity.ok(cursos);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

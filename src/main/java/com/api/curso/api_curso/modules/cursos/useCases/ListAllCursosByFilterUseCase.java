@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.api.curso.api_curso.modules.cursos.dto.CursoDTO;
@@ -22,27 +24,27 @@ public class ListAllCursosByFilterUseCase {
     @Autowired
     private CursoRepository cursoRepository;
 
-    public List<CursoDTO> execute(FiltroCursoDTO filtroCursoDTO) {
-        List<CursoEntity> cursos = findCursoByFilter(filtroCursoDTO);
+    public Page<CursoDTO> execute(FiltroCursoDTO filtroCursoDTO, Pageable pageable) {
+        Page<CursoEntity> cursos = findCursoByFilter(filtroCursoDTO, pageable);
 
         if (cursos.isEmpty()) {
             logger.info("Nenhum curso encontrado para os filtros aplicados.");
         }        
-        return cursos.stream()
-                     .map(curso -> new CursoDTO(curso.getId(), curso.getName(), curso.getCategory(), curso.isActive(), curso.getCreatedAt(), curso.getUpdatedAt()))
-                     .collect(Collectors.toList());
+       
+        return cursos.map(curso -> new CursoDTO(curso.getId(), curso.getName(), curso.getCategory(), curso.isActive(),
+                curso.getCreatedAt(), curso.getUpdatedAt()));
     }
 
 
-    public List<CursoEntity> findCursoByFilter(FiltroCursoDTO filtroCursoDTO) {
+    public Page<CursoEntity> findCursoByFilter(FiltroCursoDTO filtroCursoDTO, Pageable pageable) {
         if (filtroCursoDTO.getName() != null && filtroCursoDTO.getCategory() != null) {
-            return cursoRepository.findByNameContainingIgnoreCaseAndCategoryContainingIgnoreCase(filtroCursoDTO.getName(), filtroCursoDTO.getCategory());
+            return cursoRepository.findByNameContainingIgnoreCaseAndCategoryContainingIgnoreCase(filtroCursoDTO.getName(), filtroCursoDTO.getCategory(), pageable);
         } else if (filtroCursoDTO.getName() != null) {
-            return cursoRepository.findByNameContainingIgnoreCase(filtroCursoDTO.getName());
+            return cursoRepository.findByNameContainingIgnoreCase(filtroCursoDTO.getName(), pageable);
         } else if (filtroCursoDTO.getCategory() != null) {
-            return cursoRepository.findByCategoryContainingIgnoreCase(filtroCursoDTO.getCategory());
+            return cursoRepository.findByCategoryContainingIgnoreCase(filtroCursoDTO.getCategory(), pageable);
         } else {
-            return cursoRepository.findByDeletedAtIsNull();
+            return cursoRepository.findByDeletedAtIsNull(pageable);
         }
 
     }

@@ -2,12 +2,8 @@ package com.api.curso.api_curso.modules.users.entity;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.Length;
-
-import com.api.curso.api_curso.modules.cursos.entity.CursoEntity;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import jakarta.persistence.Column;
@@ -17,7 +13,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
 

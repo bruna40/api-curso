@@ -1,10 +1,6 @@
 package com.api.curso.api_curso.modules.cursos.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 
 public class FiltroCursoDTO {
 
