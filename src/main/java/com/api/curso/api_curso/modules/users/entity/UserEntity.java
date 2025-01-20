@@ -14,6 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -24,13 +25,16 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @NotNull(message = "O campo [name] é obrigatório")
     @Schema(example = "Ada Lovelace", requiredMode = RequiredMode.REQUIRED, description = "Nome do candidato")
     private String name;
 
+    @NotNull(message = "O campo [email] é obrigatório")
     @Email(message = "O campo [email] deve conter um e-mail válido")
     @Schema(example = "ada@email.com", requiredMode = RequiredMode.REQUIRED, description = "E-mail do candidato")
     private String email;
 
+    @NotNull(message = "O campo [password] é obrigatório")
     @Length(min = 10, max = 100, message = "A senha deve conter entre (10) e (100) caracteres")
     @Schema(example = "0123456789", requiredMode = RequiredMode.REQUIRED, description = "Senha do candidato")
     private String password;

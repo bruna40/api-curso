@@ -31,8 +31,7 @@ public class ListAllCursosByFilterUseCase {
             logger.info("Nenhum curso encontrado para os filtros aplicados.");
         }        
        
-        return cursos.map(curso -> new CursoDTO(curso.getId(), curso.getName(), curso.getCategory(), curso.isActive(),
-                curso.getCreatedAt(), curso.getUpdatedAt()));
+        return cursos.map(curso -> new CursoDTO(curso.getId(), curso.getName(), curso.getCategory(), curso.isActive(), curso.getCreatedAt(), curso.getUpdatedAt()));
     }
 
 

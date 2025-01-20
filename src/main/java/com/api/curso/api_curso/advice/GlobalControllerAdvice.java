@@ -6,11 +6,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.api.curso.api_curso.exceptions.UserNotFoundException;
+
 @ControllerAdvice
 public class GlobalControllerAdvice {
    
   @ExceptionHandler
   public ResponseEntity<String> handleNotFound(NotFoundException exception) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        .body(exception.getMessage());
+  }
+
+  @ExceptionHandler
+  public ResponseEntity<String> handleNotFound(UserNotFoundException exception) {
     return ResponseEntity.status(HttpStatus.NOT_FOUND)
         .body(exception.getMessage());
   }

@@ -62,4 +62,6 @@ public class CursoUseCase {
        return cursoRepository.findByDeletedAtIsNull(pageable);
     }
 
+    
+
 }

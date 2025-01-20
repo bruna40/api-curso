@@ -42,7 +42,7 @@ public class CursoEntity {
     private LocalDateTime deletedAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    @JoinColumn(name = "user_id")
     private UserEntity user;
 
     public CursoEntity() {
@@ -58,6 +58,10 @@ public class CursoEntity {
 
     public String getName() {
         return name;
+    }
+
+    public UserEntity getUser() {
+        return user;
     }
 
     public String getCategory() {
@@ -88,6 +92,9 @@ public class CursoEntity {
         this.name = name;
     }
 
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
     public void setCategory(String category) {
         this.category = category;
     }
