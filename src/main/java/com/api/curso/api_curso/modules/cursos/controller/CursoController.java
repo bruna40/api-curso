@@ -48,26 +48,6 @@ public class CursoController {
         this.listAllCursosByFilterUseCase = listAllCursosByFilterUseCase;
     }
 
-    
-    // @PostMapping
-    // @PreAuthorize("hasRole('ADMIN')")
-    // @Operation(summary = "Criar curso", description = "Apenas pessoas com o perfil de administrador podem criar cursos")
-    // @ApiResponses({
-    //     @ApiResponse(responseCode = "200", content = {
-    //         @Content(schema = @Schema(implementation = CreateCursoDTO.class))
-    //     }),
-    // })
-    // @SecurityRequirement(name = "jwt_auth")
-    // public ResponseEntity<CursoEntity> create(@Valid @RequestBody CursoEntity cursoEntity) {
-    //     try {
-    //         CursoEntity curso = cursoUseCase.execute(cursoEntity);
-    //         return ResponseEntity.status(HttpStatus.CREATED).body(curso);
-    //     } catch (Exception e) {
-    //         return ResponseEntity.badRequest().build();
-    //     }
-       
-
-    // }
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")

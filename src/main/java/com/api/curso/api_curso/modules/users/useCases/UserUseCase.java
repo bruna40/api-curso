@@ -3,12 +3,16 @@ package com.api.curso.api_curso.modules.users.useCases;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.api.curso.api_curso.exceptions.UserNotFoundException;
+import com.api.curso.api_curso.modules.cursos.dto.CursoDTO;
 import com.api.curso.api_curso.modules.cursos.entity.CursoEntity;
 import com.api.curso.api_curso.modules.cursos.repository.CursoRepository;
+import com.api.curso.api_curso.modules.users.dto.UserDTO;
 import com.api.curso.api_curso.modules.users.entity.UserEntity;
 import com.api.curso.api_curso.modules.users.repository.UserRepository;
 
@@ -48,5 +52,14 @@ public class UserUseCase {
         return cursoRepository.save(cursoEntity);
     }
 
+
+    public Page<CursoDTO> listAllCursos(UUID userId, Pageable pageable) {
+        UserEntity user = getUserById(userId);
+        UserDTO userDTO = UserDTO.fromEntity(user);
+
+        return CursoDTO.fromEntityList(cursoRepository.findAllByUserId(userDTO.id(), pageable));
+
+
+    }
 
 }
