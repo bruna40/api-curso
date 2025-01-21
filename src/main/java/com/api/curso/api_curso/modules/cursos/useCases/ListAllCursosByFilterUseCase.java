@@ -1,8 +1,5 @@
 package com.api.curso.api_curso.modules.cursos.useCases;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +28,13 @@ public class ListAllCursosByFilterUseCase {
             logger.info("Nenhum curso encontrado para os filtros aplicados.");
         }        
        
-        return cursos.map(curso -> new CursoDTO(curso.getId(), curso.getName(), curso.getCategory(), curso.isActive(), curso.getCreatedAt(), curso.getUpdatedAt()));
+        return cursos.map(curso -> new CursoDTO(
+            curso.getId(),
+            curso.getName(),
+            curso.getCategory(),
+            curso.isActive(),
+            curso.getUser().getId()
+            ));
     }
 
 

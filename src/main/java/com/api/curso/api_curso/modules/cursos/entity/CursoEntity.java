@@ -45,8 +45,13 @@ public class CursoEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    public CursoEntity() {
+    public CursoEntity(String name, String category) {
+        this.name = name;
+        this.category = category;
     }
+
+    public CursoEntity() {
+    } 
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();

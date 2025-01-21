@@ -2,8 +2,10 @@ package com.api.curso.api_curso.modules.users.entity;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.Length;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import jakarta.persistence.Column;
@@ -50,6 +52,7 @@ public class UserEntity {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt; 
 
+    @NotNull(message = "O campo [role] é obrigatório")
     @Enumerated(EnumType.STRING)
     private Role role;
 

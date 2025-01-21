@@ -1,23 +1,32 @@
 package com.api.curso.api_curso.modules.users.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.api.curso.api_curso.modules.users.dto.UserDTO;
-import com.api.curso.api_curso.modules.users.entity.UserEntity;
-import com.api.curso.api_curso.modules.users.useCases.UserUseCase;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.api.curso.api_curso.modules.cursos.dto.CreateCursoDTO;
+import com.api.curso.api_curso.modules.cursos.dto.CursoDTO;
+import com.api.curso.api_curso.modules.users.entity.UserEntity;
+import com.api.curso.api_curso.modules.users.useCases.UserUseCase;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+
 
 
 
@@ -41,7 +50,7 @@ public class UserController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable UUID id) {
+    public ResponseEntity<UserEntity> getUserById(@PathVariable UUID id) {
         try {
             var user = userUseCase.getUserById(id);
             return ResponseEntity.ok().body(user);
@@ -49,6 +58,19 @@ public class UserController {
             return ResponseEntity.badRequest().build();
         }
     }
-    
+
+    @PostMapping("/{id}/cursos")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Criar curso", description = "Apenas pessoas com o perfil de administrador podem criar cursos")
+    @ApiResponses({
+    @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = CreateCursoDTO.class))
+        }),
+    })
+    @SecurityRequirement(name = "jwt_auth")
+    public ResponseEntity<CursoDTO> createCurso(@PathVariable UUID id, @Valid @RequestBody CreateCursoDTO createCursoDTO) {
+        CursoDTO curso  =  CursoDTO.fromEntity(userUseCase.createCurso(createCursoDTO.toEntity(), id));
+        return  ResponseEntity.status(HttpStatus.CREATED).body(curso);
+    }   
     
 }

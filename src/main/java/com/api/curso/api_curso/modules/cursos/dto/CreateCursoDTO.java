@@ -1,17 +1,13 @@
 package com.api.curso.api_curso.modules.cursos.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.api.curso.api_curso.modules.cursos.entity.CursoEntity;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class CreateCursoDTO {
-    @Schema(description = "Nome do curso", example = "Java", requiredMode = RequiredMode.REQUIRED)
-    private String name;
-    @Schema(description = "Descrição do curso", example = "ensino", requiredMode = RequiredMode.REQUIRED)
-    private String category;
+public record CreateCursoDTO(String name, String category) {
+    public CursoEntity toEntity() {
+        return new CursoEntity(
+            name,
+            category
+        );
+    }
+
 }
