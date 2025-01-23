@@ -16,6 +16,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PreUpdate;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 @Entity(name = "cursos")
 public class CursoEntity {
@@ -23,12 +25,16 @@ public class CursoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
+    @NotNull(message = "O campo [name] é obrigatório")
     @Schema(description = "Nome do curso", example = "Java")
     private String name;
+    @NotNull(message = "O campo [category] é obrigatório")
     @Schema(description = "Descrição do curso", example = "ensino")
     private String category;
     private boolean active = true;
+
+    @Positive(message = "O preço do curso deve ser maior que zero.")
+    private Double price;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)//utilizado para nao alterar a datos de criacao
@@ -45,9 +51,10 @@ public class CursoEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    public CursoEntity(String name, String category) {
+    public CursoEntity(String name, String category, Double price) {
         this.name = name;
         this.category = category;
+        this.price = price;
     }
 
     public CursoEntity() {
@@ -71,6 +78,10 @@ public class CursoEntity {
 
     public String getCategory() {
         return category;
+    }
+
+    public Double getPrice() {
+        return price;
     }
 
     public boolean isActive() {
@@ -102,6 +113,10 @@ public class CursoEntity {
     }
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 
     public void setActive(boolean active) {

@@ -1,7 +1,6 @@
 package com.api.curso.api_curso.modules.users.controller;
 
 import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -14,12 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.api.curso.api_curso.modules.cursos.dto.CreateCursoDTO;
 import com.api.curso.api_curso.modules.cursos.dto.CursoDTO;
 import com.api.curso.api_curso.modules.users.entity.UserEntity;
 import com.api.curso.api_curso.modules.users.useCases.UserUseCase;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;

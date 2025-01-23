@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import com.api.curso.api_curso.modules.cursos.dto.CursoDTO;
 import com.api.curso.api_curso.modules.cursos.dto.FiltroCursoDTO;
 import com.api.curso.api_curso.modules.cursos.entity.CursoEntity;
@@ -33,8 +32,9 @@ public class ListAllCursosByFilterUseCase {
             curso.getName(),
             curso.getCategory(),
             curso.isActive(),
+            curso.getPrice(),
             curso.getUser().getId()
-            ));
+        ));
     }
 
 

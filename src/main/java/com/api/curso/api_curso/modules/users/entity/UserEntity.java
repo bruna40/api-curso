@@ -42,7 +42,7 @@ public class UserEntity {
     private String password;
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)//utilizado para nao alterar a datos de criacao
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @CreationTimestamp
