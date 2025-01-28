@@ -2,6 +2,7 @@ package com.api.curso.api_curso.providers;
 
 import org.springframework.stereotype.Service;
 
+import com.api.curso.api_curso.module.users.model.entity.RoleEnum;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
@@ -14,7 +15,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import com.api.curso.api_curso.modules.users.entity.Role;
 
 
 @Service
@@ -45,7 +45,7 @@ public class JWTUserProvider {
       }
   }
 
-  public String generateToken(String userId, Role roles) {
+  public String generateToken(String userId, RoleEnum roles) {
     Algorithm algorithm = Algorithm.HMAC256(secretKey);
     var expiresIn = Instant.now().plus(Duration.ofDays(1));
 
