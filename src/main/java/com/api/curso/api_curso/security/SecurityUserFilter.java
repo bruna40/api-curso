@@ -36,8 +36,6 @@ public class SecurityUserFilter extends OncePerRequestFilter {
             if(decodeToken != null){
                 var userId = decodeToken.getClaim("userId").asString();
                 var roles = decodeToken.getClaim("roles").asList(String.class);
-
-
                 if(roles == null) {
                     roles = new ArrayList<>();
                 }

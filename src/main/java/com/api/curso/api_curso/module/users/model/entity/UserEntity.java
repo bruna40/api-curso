@@ -55,10 +55,10 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private RoleEnum role;
 
-    public UserEntity(String name, String email, String password) {
+    public UserEntity(String name, String email) {
         this.name = name;
         this.email = email;
-        this.password = password;
+
     }
 
     public UserEntity() {

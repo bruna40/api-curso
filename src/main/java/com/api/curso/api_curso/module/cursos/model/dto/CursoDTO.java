@@ -4,8 +4,9 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 
 import com.api.curso.api_curso.module.cursos.model.entity.CursoEntity;
+import com.api.curso.api_curso.module.cursos.model.enums.CategoryEnum;
 
-public record CursoDTO(UUID id, String name, String category, boolean active, Double price, UUID userId) {
+public record CursoDTO(UUID id, String name, CategoryEnum category, boolean active, Double price, UUID userId) {
     public static CursoDTO fromEntity(CursoEntity cursoEntity) {
         return new CursoDTO(
             cursoEntity.getId(),

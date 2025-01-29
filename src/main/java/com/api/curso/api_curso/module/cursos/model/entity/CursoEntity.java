@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.api.curso.api_curso.module.cursos.model.enums.CategoryEnum;
 import com.api.curso.api_curso.module.users.model.entity.UserEntity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,8 +31,7 @@ public class CursoEntity {
     private String name;
     
     @NotNull(message = "O campo [category] é obrigatório")
-    @Schema(description = "Descrição do curso", example = "ensino")
-    private String category;
+    private CategoryEnum category;
     private boolean active = true;
 
     @Positive(message = "O preço do curso deve ser maior que zero.")
@@ -52,7 +52,7 @@ public class CursoEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    public CursoEntity(String name, String category, Double price) {
+    public CursoEntity(String name, CategoryEnum category, Double price) {
         this.name = name;
         this.category = category;
         this.price = price;
@@ -77,7 +77,7 @@ public class CursoEntity {
         return user;
     }
 
-    public String getCategory() {
+    public CategoryEnum getCategory() {
         return category;
     }
 
@@ -112,7 +112,7 @@ public class CursoEntity {
     public void setUser(UserEntity user) {
         this.user = user;
     }
-    public void setCategory(String category) {
+    public void setCategory(CategoryEnum category) {
         this.category = category;
     }
 
