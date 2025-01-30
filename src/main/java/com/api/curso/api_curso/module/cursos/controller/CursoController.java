@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.api.curso.api_curso.exceptions.UserIdNotFound;
 import com.api.curso.api_curso.module.cursos.exceptions.CursoNotFoundException;
 import com.api.curso.api_curso.module.cursos.exceptions.UnauthorizedActionException;
 import com.api.curso.api_curso.module.cursos.model.dto.CursoDTO;
@@ -31,7 +29,6 @@ import com.api.curso.api_curso.module.cursos.useCases.CursoUseCase;
 import com.api.curso.api_curso.module.cursos.useCases.ListAllCursosByFilterUseCase;
 import com.api.curso.api_curso.module.users.model.entity.UserEntity;
 import com.api.curso.api_curso.module.users.useCases.UserUseCase;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -91,10 +88,30 @@ public class CursoController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('PROFESSOR')")
     @SecurityRequirement(name = "jwt_auth")
-    public ResponseEntity<CursoEntity> updateCurso(@PathVariable UUID id, @RequestBody @Valid UpdateCursoDTO updateCursoDTO) {
-        updateCursoDTO.setId(id);
-        cursoUseCase.updatedCurso(updateCursoDTO);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<CursoEntity> updateCurso(
+        @Valid @PathVariable UUID id, 
+        @RequestBody UpdateCursoDTO updateCursoDTO,
+        @AuthenticationPrincipal UserEntity user
+    ) {
+        try {
+            if (id == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+            String userEmail = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (userEmail == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            var userRole = userUseCase.getByEmail(userEmail);
+
+            updateCursoDTO.setId(id);
+            cursoUseCase.updatedCurso(updateCursoDTO, userEmail, userRole.getRole());
+            return ResponseEntity.noContent().build();
+        } catch (CursoNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (UnauthorizedActionException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        
     }
 
     @DeleteMapping("/{cursoId}")
@@ -106,6 +123,7 @@ public class CursoController {
             if (cursoId == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
+            
             String userEmail = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if (userEmail == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

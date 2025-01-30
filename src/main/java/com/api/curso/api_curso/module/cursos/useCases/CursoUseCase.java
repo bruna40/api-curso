@@ -1,6 +1,7 @@
 package com.api.curso.api_curso.module.cursos.useCases;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import com.api.curso.api_curso.module.cursos.exceptions.CursoNotFoundException;
 import com.api.curso.api_curso.module.cursos.exceptions.UnauthorizedActionException;
 import com.api.curso.api_curso.module.cursos.model.dto.UpdateCursoDTO;
 import com.api.curso.api_curso.module.cursos.model.entity.CursoEntity;
+import com.api.curso.api_curso.module.cursos.model.enums.CategoryEnum;
 import com.api.curso.api_curso.module.cursos.repository.CursoRepository;
 import com.api.curso.api_curso.module.users.model.entity.RoleEnum;
 
@@ -32,18 +34,39 @@ public class CursoUseCase {
        return cursoRepository.findById(id);
     }
 
-    public CursoEntity updatedCurso(UpdateCursoDTO updateCursoDTO) {
+    private void applyUpdates(CursoEntity cursoEntity, UpdateCursoDTO updateCursoDTO) {
+    if (updateCursoDTO.getName() != null && !Objects.equals(cursoEntity.getName(), updateCursoDTO.getName())) {
+        cursoEntity.setName(updateCursoDTO.getName());
+    }
+
+    if (updateCursoDTO.getCategory() != null) {
+        try {
+            CategoryEnum categoryEnum = CategoryEnum.valueOf(updateCursoDTO.getCategory().toUpperCase());
+            if (!Objects.equals(cursoEntity.getCategory(), categoryEnum)) {
+                cursoEntity.setCategory(categoryEnum);
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    cursoEntity.setUpdatedAt(LocalDateTime.now());
+}
+
+    public CursoEntity updatedCurso(UpdateCursoDTO updateCursoDTO, String email, RoleEnum role) {
         var cursoEntity = cursoRepository.findById(updateCursoDTO.getId()).orElseThrow(() -> new CursoNotFoundException("Curso não encontrado"));
+        if (role == RoleEnum.ADMIN) {
+            applyUpdates(cursoEntity, updateCursoDTO);
+        } else if (role == RoleEnum.PROFESSOR) {
+            if (!cursoEntity.getUser().getEmail().equals(email)) {
+                throw new UnauthorizedActionException("Você só pode editar cursos que criou.");
+            }
+            applyUpdates(cursoEntity, updateCursoDTO);
+        } else {
+            throw new UnauthorizedActionException("Você não tem permissão para editar este curso.");
+        }
+
         
-        if (cursoEntity.getName() != null) {
-            updateCursoDTO.setName(updateCursoDTO.getName());
-        }
-
-        if (cursoEntity.getCategory() != null) {
-            updateCursoDTO.setCategory(updateCursoDTO.getCategory());
-        }
-
-        cursoEntity.setUpdatedAt(LocalDateTime.now());
 
         return cursoRepository.save(cursoEntity);
     }
@@ -62,9 +85,7 @@ public class CursoUseCase {
         if (role == RoleEnum.ADMIN) {
             cursoEntity.setDeletedAt(LocalDateTime.now());
             cursoRepository.save(cursoEntity);
-        } 
-
-        else if (role == RoleEnum.PROFESSOR) {
+        }  else if (role == RoleEnum.PROFESSOR) {
             if (!cursoEntity.getUser().getEmail().equals(email)) { 
                 throw new UnauthorizedActionException("Você não tem permissão para deletar este curso.");
             }

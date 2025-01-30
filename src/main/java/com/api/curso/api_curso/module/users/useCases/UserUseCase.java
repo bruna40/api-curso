@@ -52,14 +52,14 @@ public class UserUseCase {
         
     }
 
-    public CursoEntity createCurso(CursoEntity cursoEntity, UUID userId) throws UserIdNotFound{
+    public CursoEntity createCurso(CursoEntity cursoEntity, UUID userId) {
         UserEntity user = getUserById(userId);
         cursoEntity.setUser(user);
         return cursoRepository.save(cursoEntity);
     }
 
 
-    public Page<CursoDTO> listAllCursos(UUID userId, Pageable pageable)  throws UserIdNotFound {
+    public Page<CursoDTO> listAllCursos(UUID userId, Pageable pageable) {
         UserEntity user = getUserById(userId);
         UserDTO userDTO = UserDTO.fromEntity(user);
 
