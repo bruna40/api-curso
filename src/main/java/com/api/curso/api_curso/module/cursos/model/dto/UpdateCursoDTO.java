@@ -1,19 +1,22 @@
 package com.api.curso.api_curso.module.cursos.model.dto;
 
 import java.util.UUID;
-import io.swagger.v3.oas.annotations.media.Schema;
+
+import com.api.curso.api_curso.module.cursos.model.enums.CategoryEnum;
+
 
 public class UpdateCursoDTO {
 
     private UUID id;
-    @Schema(description = "Nome do curso", example = "Java")
     private String name;
-    @Schema(description = "Descrição do curso", example = "ensino")
-    private String category;
+    private CategoryEnum category;
+    private Double price;
 
-    public UpdateCursoDTO(String name, String category) {
+    public UpdateCursoDTO(UUID id,String name, CategoryEnum category, Double price) {
+        this.id = id;
         this.name = name;
         this.category = category;
+        this.price = price;
     }
 
     public UUID getId() {
@@ -24,19 +27,28 @@ public class UpdateCursoDTO {
         return name;
     }
 
-    public String getCategory() {
+    public CategoryEnum getCategory() {
         return category;
+    }
+
+    public Double getPrice() {
+        return price;
     }
 
     public void setId(UUID id) {
         this.id = id;
     }
 
+
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(CategoryEnum category) {
         this.category = category;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 }

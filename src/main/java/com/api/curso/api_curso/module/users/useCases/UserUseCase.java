@@ -1,18 +1,14 @@
 package com.api.curso.api_curso.module.users.useCases;
 
 import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.api.curso.api_curso.exceptions.EmailAlreadyExistsException;
 import com.api.curso.api_curso.exceptions.UserIdNotFound;
-import com.api.curso.api_curso.module.cursos.model.dto.CursoDTO;
-import com.api.curso.api_curso.module.cursos.model.entity.CursoEntity;
-import com.api.curso.api_curso.module.cursos.repository.CursoRepository;
-import com.api.curso.api_curso.module.users.model.dto.UserDTO;
+import com.api.curso.api_curso.module.cursos.exceptions.UnauthorizedActionException;
+import com.api.curso.api_curso.module.users.model.dto.UpdateUserDTO;
+import com.api.curso.api_curso.module.users.model.entity.RoleEnum;
 import com.api.curso.api_curso.module.users.model.entity.UserEntity;
 import com.api.curso.api_curso.module.users.repository.UserRepository;
 
@@ -20,26 +16,21 @@ import com.api.curso.api_curso.module.users.repository.UserRepository;
 public class UserUseCase {
 
     private UserRepository userRepository;
-    private CursoRepository cursoRepository;
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserUseCase(UserRepository userRepository, CursoRepository cursoRepository, PasswordEncoder passwordEncoder) {
+    public UserUseCase(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.cursoRepository = cursoRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     public UserEntity getByEmail(String email){
         return userRepository.findByEmail(email)
         .orElseThrow(EmailAlreadyExistsException::new);
-        
-
     }
     
 
     public UserEntity execute(UserEntity userEntity) {
-
         var password = passwordEncoder.encode(userEntity.getPassword());
         userEntity.setPassword(password);
 
@@ -49,23 +40,40 @@ public class UserUseCase {
 
     public UserEntity getUserById(UUID id)   {
         return userRepository.findById(id).orElseThrow(UserIdNotFound::new);
-        
     }
 
-    public CursoEntity createCurso(CursoEntity cursoEntity, UUID userId) {
-        UserEntity user = getUserById(userId);
-        cursoEntity.setUser(user);
-        return cursoRepository.save(cursoEntity);
+    private void applyUserUpdates(UserEntity userEntity, UpdateUserDTO updateUserDTO) {
+        if (updateUserDTO.getName() != null && !userEntity.getName().equals(updateUserDTO.getName())) {
+            userEntity.setName(updateUserDTO.getName());
+        }
+
+        if (updateUserDTO.getEmail() != null && !userEntity.getEmail().equals(updateUserDTO.getEmail())) {
+            userEntity.setEmail(updateUserDTO.getEmail());
+        }
+
+        if (updateUserDTO.getPassword() != null) {
+            var password = passwordEncoder.encode(updateUserDTO.getPassword());
+            userEntity.setPassword(password);
+        }
     }
-
-
-    public Page<CursoDTO> listAllCursos(UUID userId, Pageable pageable) {
-        UserEntity user = getUserById(userId);
-        UserDTO userDTO = UserDTO.fromEntity(user);
-
-        return CursoDTO.fromEntityList(cursoRepository.findAllByUserId(userDTO.id(), pageable));
-    }
-
     
+    
+    public UserEntity updateUser(UpdateUserDTO updateUserDTO, String email, RoleEnum role) {
+        var user = getUserById(updateUserDTO.getId());
+
+        if (role == RoleEnum.ADMIN) {
+            applyUserUpdates(user, updateUserDTO);
+            
+        } else if(role == RoleEnum.PROFESSOR || role == RoleEnum.USER) {
+            if (!user.getEmail().equals(email)) {
+                throw new UnauthorizedActionException("Você só pode editar usuários que criou.");
+            }
+            applyUserUpdates(user, updateUserDTO);
+        }  else {
+            throw new UnauthorizedActionException("Você não tem permissão para editar este usuário.");
+        }
+        
+        return userRepository.save(user);
+    }
 
 }

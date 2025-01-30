@@ -1,5 +1,6 @@
 package com.api.curso.api_curso.module.cursos.repository;
 
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,5 +20,6 @@ public interface CursoRepository extends JpaRepository<CursoEntity, UUID> {
     Page<CursoEntity> findByDeletedAtIsNull(Pageable pageable);
 
     Page<CursoEntity> findAllByUserId(UUID userId, Pageable pageable);
+    Optional<CursoEntity> findById(UUID id);
 
 }
